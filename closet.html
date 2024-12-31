@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Ventanas</title>
+    <style>
+        .lm {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+.lm::after {
+    content: ' <';
+    color: #555;
+    font-size: 18px;
+}
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .calculator {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .input-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        input {
+            width: 45%;
+            height: 40px;
+            margin: 5px;
+            font-size: 18px;
+            text-align: right;
+            border: 1px solid #081bf3;
+            border-radius: 5px;
+            padding: 5px;
+        }
+        .separator {
+            font-size: 24px;
+            margin: 0 5px;
+            color: #cf0000;
+        }
+        button {
+            width: 60px;
+            height: 40px;
+            margin: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #b3e9d6;
+            border: 1px solid #000000;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #ef3e3e;
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+        .number-buttons, .fraction-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            width: 48%;
+        }
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        .action-buttons button {
+            width: 48%;
+            height: 50px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+        }
+        .action-buttons button:hover {
+            background-color: #45a049;
+        }
+        #resultsContainer {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f8ff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .result-item {
+            font-size: 18px;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #e6f7ff;
+            border-left: 5px solid #054173;
+            border-radius: 5px;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+        .result-item:hover {
+            background-color: #cfe9f5;
+            border-left-color: #0b79d0;
+            transform: translateX(10px);
+        }
+    </style>
+</head>
+<body>
+
+
+    <div class="calculator">
+        <h2>Calculadora de Ventanas</h2>
+        <h2 class="lm"><a href="index.html" class="lm">Atras</a><h2>
+
+        <h2 id="texto"></h2>
+
+        <div class="input-group">
+            <input type="text" id="ancho" placeholder="Ancho" readonly>
+            <span class="separator">x</span>
+            <input type="text" id="altura" placeholder="Altura" readonly>
+        </div>
+
+        <div class="buttons">
+            <div class="number-buttons">
+                <button onclick="appendNumber(7)">7</button>
+                <button onclick="appendNumber(8)">8</button>
+                <button onclick="appendNumber(9)">9</button>
+                <button onclick="appendNumber(4)">4</button>
+                <button onclick="appendNumber(5)">5</button>
+                <button onclick="appendNumber(6)">6</button>
+                <button onclick="appendNumber(1)">1</button>
+                <button onclick="appendNumber(2)">2</button>
+                <button onclick="appendNumber(3)">3</button>
+                <button onclick="appendNumber(0)">0</button>
+            </div>
+
+            <div class="fraction-buttons">
+                <button onclick="appendFraction('1/8')">1/8</button>
+                <button onclick="appendFraction('3/16')">3/16</button>
+                <button onclick="appendFraction('1/4')">1/4</button>
+                <button onclick="appendFraction('5/16')">5/16</button>
+                <button onclick="appendFraction('3/8')">3/8</button>
+                <button onclick="appendFraction('7/16')">7/16</button>
+                <button onclick="appendFraction('1/2')">1/2</button>
+                <button onclick="appendFraction('9/16')">9/16</button>
+                <button onclick="appendFraction('5/8')">5/8</button>
+                <button onclick="appendFraction('11/16')">11/16</button>
+                <button onclick="appendFraction('3/4')">3/4</button>
+                <button onclick="appendFraction('13/16')">13/16</button>
+                <button onclick="appendFraction('7/8')">7/8</button>
+                <button onclick="appendFraction('15/16')">15/16</button>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button onclick="limpiarInputs()">Limpiar</button>
+            <button onclick="calcularDimensiones()">Calcular</button>
+        </div>
+
+        <div id="resultsContainer">
+            <div id="jambas" class="result-item"></div>
+            <div id="laterales" class="result-item"></div>
+            <div id="alfeicelCabezal" class="result-item"></div>
+            <div id="rieles" class="result-item"></div>
+            <div id="maletero" class="result-item"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentInput = "width";
+
+        function appendNumber(number) {
+            const input = currentInput === "width" ? document.getElementById("ancho") : document.getElementById("altura");
+            input.value += number;
+        }
+
+        function appendFraction(fraction) {
+            const input = currentInput === "width" ? document.getElementById("ancho") : document.getElementById("altura");
+            input.value += " " + fraction;
+        }
+
+        document.getElementById("ancho").addEventListener("click", function() {
+            currentInput = "width";
+        });
+
+        document.getElementById("altura").addEventListener("click", function() {
+            currentInput = "height";
+        });
+
+        function parseFraction(input) {
+            const parts = input.split(' ');
+            let total = 0;
+
+            parts.forEach(part => {
+                if (part.includes("/")) {
+                    const [numerator, denominator] = part.split("/").map(Number);
+                    total += numerator / denominator;
+                } else {
+                    total += Number(part);
+                }
+            });
+
+            return total;
+        }
+
+        function limpiarInputs() {
+            document.getElementById('ancho').value = '';
+            document.getElementById('altura').value = '';
+            document.getElementById('jambas').innerText = '';
+            document.getElementById('laterales').innerText = '';
+            document.getElementById('alfeicelCabezal').innerText = '';
+            document.getElementById('rieles').innerText = '';
+            document.getElementById('maletero').innerText = '';
+        }
+
+        function formatFraction(value) {
+            if (Number.isInteger(value)) return value;
+            let integerPart = Math.floor(value);
+            let fractionPart = value - integerPart;
+
+            // Lista de fracciones comunes
+            const fractions = {
+                0.125: "1/8",
+                0.1875: "3/16",
+                0.25: "1/4",
+                0.3125: "5/16",
+                0.375: "3/8",
+                0.4375: "7/16",
+                0.5: "1/2",
+                0.5625: "9/16",
+                0.625: "5/8",
+                0.6875: "11/16",
+                0.75: "3/4",
+                0.8125: "13/16",
+                0.875: "7/8",
+                0.9375: "15/16"
+            };
+
+            // Encontrar la fracción más cercana
+            let closest = 1;
+            let minDiff = 1;
+            for (let decimal in fractions) {
+                const diff = Math.abs(fractionPart - decimal);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    closest = decimal;
+                }
+            }
+
+            return integerPart ? integerPart + " " + fractions[closest] : fractions[closest];
+        }
+
+        function calcularDimensiones() {
+            const ancho = parseFraction(document.getElementById('ancho').value);
+            const altura = parseFraction(document.getElementById('altura').value);
+
+            if (isNaN(ancho) || isNaN(altura)) {
+                alert('Por favor, ingresa valores válidos para el ancho y la altura.');
+                return;
+            }
+
+            const jambas = 79.25;
+            const laterales = 79.75;
+            const rieles = ancho - 0.25;
+            const alfeicelCabezal = (ancho - 0.25) / 2;
+
+            const jambasMaletero = altura - 83;
+            const lateralesMaleteros = altura - 82.5;
+
+            document.getElementById('jambas').innerText = `Jambas: ${formatFraction(jambas)} pulgadas`;
+            document.getElementById('laterales').innerText = `Laterales: ${formatFraction(laterales)} pulgadas`;
+            document.getElementById('alfeicelCabezal').innerText = `Alfeicel y Cabezal: ${formatFraction(alfeicelCabezal)} pulgadas`;
+            document.getElementById('rieles').innerText = `Rieles: ${formatFraction(rieles)} pulgadas`;
+            document.getElementById('maletero').innerText = `Maletero - Jambas: ${formatFraction(jambasMaletero)}, Laterales: ${formatFraction(lateralesMaleteros)}`;
+            window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
+
+        const textoCompleto = "------L.M------";
+        let index = 0;
+
+        function escribir() {
+            if (index < textoCompleto.length) {
+                document.getElementById("texto").innerHTML += textoCompleto.charAt(index);
+                index++;
+                setTimeout(escribir, 300);
+            } else {
+                setTimeout(() => {
+                    index = 0;
+                    document.getElementById("texto").innerHTML = "";
+                    escribir();
+                }, 1000);
+            }
+        }
+
+        escribir();
+    </script>
+</body>
+</html>

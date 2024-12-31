@@ -1,0 +1,396 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Ventanas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .calculator {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .input-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        input, select {
+            width: 45%;
+            height: 40px;
+            margin: 5px;
+            font-size: 18px;
+            text-align: right;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 5px;
+        }
+        .separator {
+            font-size: 24px;
+            margin: 0 5px;
+            color: #666;
+        }
+        button {
+            width: 60px;
+            height: 40px;
+            margin: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #e0e0e0;
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+        .number-buttons, .fraction-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            width: 48%;
+        }
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        .action-buttons button {
+            width: 48%;
+            height: 50px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+        }
+        .action-buttons button:hover {
+            background-color: #45a049;
+        }
+        #resultsContainer {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f8ff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .result-item {
+            font-size: 18px;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #e6f7ff;
+            border-left: 5px solid #2196F3;
+            border-radius: 5px;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+        .result-item:hover {
+            background-color: #cfe9f5;
+            border-left-color: #0b79d0;
+            transform: translateX(10px);
+        }
+        .result-item:before {
+            content: "✔ ";
+            color: #2196F3;
+            font-weight: bold;
+        }
+        @media print {
+            body {
+                background-color: white;
+            }
+            .calculator {
+                box-shadow: none;
+                width: 100%;
+                max-width: none;
+            }
+            .buttons, .action-buttons, #windowType, .input-group {
+                display: none;
+            }
+            #results {
+                background-color: white;
+                padding: 0;
+            }
+            #results h3 {
+                font-size: 18px;
+                margin-bottom: 10px;
+            }
+            #results p {
+                font-size: 14px;
+                margin-bottom: 5px;
+            }
+        }
+        .lm {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+.lm::after {
+    content: ' ➤';
+    color: #555;
+    font-size: 18px;
+}
+
+    </style>
+</head>
+<body>
+
+<div class="calculator">-+
+    
+    <h2 id="texto"></h2>
+    <h3><a href="#" class="lm">Actulizaciones</a></h3>
+
+
+    <select id="windowType" onchange="handleSelectChange()">
+        <option value="tradicional">Tradicional</option>
+        <option value="closet">Closet</option>
+        <option value="p65">P65</option>
+        <option value="p90">P92</option>
+    </select>
+    
+    <script>
+        function handleSelectChange() {
+            const select = document.getElementById('windowType');
+            if (select.value === 'closet') {
+                window.location.href = 'closet.html';
+            }
+        }
+    </script>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="input-group">
+        <input type="text" id="widthInput" placeholder="Ancho" readonly>
+        <span class="separator">x</span>
+        <input type="text" id="heightInput" placeholder="Altura" readonly>
+    </div>
+    
+    <div class="buttons">
+        <div class="number-buttons">
+            <button onclick="appendNumber(7)">7</button>
+            <button onclick="appendNumber(8)">8</button>
+            <button onclick="appendNumber(9)">9</button>
+            <button onclick="appendNumber(4)">4</button>
+            <button onclick="appendNumber(5)">5</button>
+            <button onclick="appendNumber(6)">6</button>
+            <button onclick="appendNumber(1)">1</button>
+            <button onclick="appendNumber(2)">2</button>
+            <button onclick="appendNumber(3)">3</button>
+            <button onclick="appendNumber(0)">0</button>
+        </div>
+
+        <div class="fraction-buttons">
+            <button onclick="appendFraction('1/8')">1/8</button>
+            <button onclick="appendFraction('3/16')">3/16</button>
+            <button onclick="appendFraction('1/4')">1/4</button>
+            <button onclick="appendFraction('5/16')">5/16</button>
+            <button onclick="appendFraction('3/8')">3/8</button>
+            <button onclick="appendFraction('7/16')">7/16</button>
+            <button onclick="appendFraction('1/2')">1/2</button>
+            <button onclick="appendFraction('9/16')">9/16</button>
+            <button onclick="appendFraction('5/8')">5/8</button>
+            <button onclick="appendFraction('11/16')">11/16</button>
+            <button onclick="appendFraction('3/4')">3/4</button>
+            <button onclick="appendFraction('13/16')">13/16</button>
+            <button onclick="appendFraction('7/8')">7/8</button>
+            <button onclick="appendFraction('15/16')">15/16</button>
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <button onclick="clearInputs()">Limpiar</button>
+        <button onclick="calculateDiscounts()">Calcular</button>
+    </div>
+    <div id="resultsContainer">
+        <div id="jambas" class="result-item"></div>
+        <div id="laterales" class="result-item"></div>
+        <div id="riel" class="result-item"></div>
+        <div id="alfeicelCabezal" class="result-item"></div>
+        <div id="vidrio" class="result-item"></div>
+    </div>
+</div>
+
+<script>
+    let currentInput = "width";
+
+    function appendNumber(number) {
+        const input = currentInput === "width" ? document.getElementById("widthInput") : document.getElementById("heightInput");
+        input.value += number;
+    }
+
+    function appendFraction(fraction) {
+        const input = currentInput === "width" ? document.getElementById("widthInput") : document.getElementById("heightInput");
+        input.value += " " + fraction;
+    }
+
+    function clearInputs() {
+        document.getElementById("widthInput").value = '';
+        document.getElementById("heightInput").value = '';
+    }
+
+    document.getElementById("widthInput").addEventListener("click", function() {
+        currentInput = "width";
+    });
+
+    document.getElementById("heightInput").addEventListener("click", function() {
+        currentInput = "height";
+    });
+
+    function parseFraction(input) {
+        const parts = input.split(' ');
+        let total = 0;
+
+        parts.forEach(part => {
+            if (part.includes("/")) {
+                const [numerator, denominator] = part.split("/").map(Number);
+                total += numerator / denominator;
+            } else {
+                total += Number(part);
+            }
+        });
+
+        return total;
+    }
+
+    function formatFraction(value) {
+        if (Number.isInteger(value)) return value;
+        let integerPart = Math.floor(value);
+        let fractionPart = value - integerPart;
+
+        const tolerance = 1.0E-6;
+        let h1 = 1, h2 = 0, k1 = 0, k2 = 1, b = fractionPart;
+        do {
+            let a = Math.floor(b);
+            let aux = h1; h1 = a * h1 + h2; h2 = aux;
+            aux = k1; k1 = a * k1 + k2; k2 = aux;
+            b = 1 / (b - a);
+        } while (Math.abs(fractionPart - h1 / k1) > fractionPart * tolerance);
+
+        const numerator = h1;
+        const denominator = k1;
+        return integerPart ? integerPart + " " + numerator + "/" + denominator : numerator + "/" + denominator;
+    }
+
+    function calculateDiscounts() {
+        const width = parseFraction(document.getElementById("widthInput").value);
+        const height = parseFraction(document.getElementById("heightInput").value);
+        const windowType = document.getElementById("windowType").value;
+
+        let jambas, laterales, riel, alfeicelCabezal, vidrioAncho, vidrioAlto;
+      //tradicional
+        switch(windowType) {
+            case "tradicional":
+                jambas = formatFraction(height - 7/8);
+                laterales = formatFraction(height - 1/2);
+                riel = formatFraction(width - 1/4);
+                alfeicelCabezal = formatFraction((width - 1/4) / 2);
+                vidrioAncho = formatFraction((width - 4) / 2);
+                vidrioAlto = formatFraction(height - 4);
+                break;
+            case "p65":
+                jambas = formatFraction(height - 2);
+                laterales = formatFraction(height - 3/16);
+                riel = formatFraction(width - 1 - 3/8);
+                alfeicelCabezal = formatFraction((width - 1 - 3/8) / 2);
+                vidrioAncho = formatFraction((width - 6 - 1/2) / 2);
+                vidrioAlto = formatFraction(height - 5);
+                break;
+            case "p90":
+                jambas = formatFraction(height - 2.5);
+                laterales = formatFraction(height - 1/8);
+                riel = formatFraction(width - 1 - 5/8);
+                alfeicelCabezal = formatFraction((width -1) /2);
+                vidrioAncho = formatFraction((width - 7 -3/4 )/2);
+                vidrioAlto = formatFraction(height - 6 -1/2);
+                break;
+        }
+
+        document.getElementById("jambas").innerText = "Jambas: " + jambas + " pulgadas";
+        document.getElementById("laterales").innerText = "Laterales: " + laterales + " pulgadas";
+        document.getElementById("riel").innerText = "Riel: " + riel + " pulgadas";
+        document.getElementById("alfeicelCabezal").innerText = "Alfeicel y Cabezal: " + alfeicelCabezal + " pulgadas";
+        document.getElementById("vidrio").innerText = "Vidrio: " + vidrioAncho + " x " + vidrioAlto + " pulgadas";
+        window.scrollTo({
+    top: document.body.scrollHeight,
+    behavior: 'smooth'
+});
+
+    }
+</script>
+<script>
+    const textoCompleto = "/./././././L.m/./././././";
+    let index = 0;
+
+    function escribir() {
+        if (index < textoCompleto.length) {
+            document.getElementById("texto").innerHTML += textoCompleto.charAt(index);
+            index++;
+            setTimeout(escribir, 300);
+        } else {
+            setTimeout(() => {
+                index = 0;
+                document.getElementById("texto").innerHTML = "";
+                escribir();
+            }, 1000);
+        }
+    }
+
+    escribir();
+
+</script>
+</body>
+</html>
